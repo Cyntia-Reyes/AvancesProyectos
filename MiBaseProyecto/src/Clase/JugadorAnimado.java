@@ -9,7 +9,7 @@ import javafx.scene.shape.Rectangle;
 
 public class JugadorAnimado {
 	private int x;
-	private int y;
+	public static int y;
 	private int x1;
 	private int y1;
 	private int ancho;
@@ -17,7 +17,7 @@ public class JugadorAnimado {
 	private String indiceImagen;
 	private int velocidad;
 	private HashMap<String, Animacion> animaciones;
-	private String animacionActual;
+	public static String animacionActual;
 	private int puntuacion = 0;
     boolean saltando=false;
     boolean sube=false;
@@ -349,8 +349,18 @@ public class JugadorAnimado {
 		if (this.obtenerRectangulo().intersects(enemigos.obtenerRectangulo().getBoundsInLocal())) {
 				System.out.println("Estan colisionando");
 				if (!enemigos.isCapturado())
-				
+					Juego.fin=true;
 				enemigos.setCapturado(true);
+		}
+               return false;
+	
+		}
+	public boolean verificarColisiones(Enemigos2 enemigos2) {
+		if (this.obtenerRectangulo().intersects(enemigos2.obtenerRectangulo().getBoundsInLocal())) {
+				System.out.println("Estan colisionando");
+				if (!enemigos2.isCapturado())
+					Juego.fin=true;
+				enemigos2.setCapturado(true);
 		}
                return false;
 	

@@ -4,9 +4,12 @@ import java.util.HashMap;
 //import java.util.logging.Level;
 //import java.util.logging.Logger;
 
+import Clase.Animacion;
+
 //import javax.swing.JFrame;
 
 import Clase.Enemigos;
+import Clase.Enemigos2;
 import Clase.Item;
 import Clase.Jugador;
 
@@ -54,20 +57,14 @@ public class Juego extends Application{
 	public static boolean baja=false;
 	//public static boolean accion;
 	public static HashMap<String, Image> imagenes; //Shift+Ctrl+O
-	private ArrayList<Enemigos> enemigos;
-	private ArrayList<Item> items;
-	/*private Item item;
-	private Item item2;
-	private Item item3;
-	private Item item4;
-	private Item item5;
-	private Item item6;
-	private Item item7;
-	private Item item8;
-	private Item item9;*/
+	public static boolean fin;
 	
-	//private Enemigos enemigos;
-
+	private ArrayList<Item> items;
+	int randomx,randomy,randomyy;
+	int randomxV,randomyV,randomyyV;
+	
+	private ArrayList<Enemigos> enemigos;
+	private ArrayList<Enemigos2> enemigos2;
 	
 	//private ArrayList<Image> imagenes;
 	
@@ -346,15 +343,40 @@ public class Juego extends Application{
 	
 		
 		fondo = new Fondo(0,0,5,"fondo");
-		fondo1 = new Fondo(0,0,5,"fondo1"+ "fondo");
+		enemigos=new ArrayList<Enemigos>();
+		for (int z=0;z<30;z++) {
+			randomyyV=(int)(Math.random()*3+1);
+			randomxV=(int)(Math.random()*26000+3000);
+			if (randomyyV==1)
+				randomyV=200;
+			if (randomyyV==2)
+				randomyV=150;
+			if (randomyyV==3)
+				randomyV=270;
+			enemigos.add(new Enemigos(randomxV, randomyV,z, z, 4, "mover", null));
+		}
+		
+		enemigos2=new ArrayList<Enemigos2>();
+		for (int z=0;z<30;z++) {
+			randomyyV=(int)(Math.random()*3+1);
+			randomxV=(int)(Math.random()*26000+3000);
+			if (randomyyV==1)
+				randomyV=240;
+			if (randomyyV==2)
+				randomyV=270;
+			if (randomyyV==3)
+				randomyV=100;
+			enemigos2.add(new Enemigos2(randomxV, randomyV, 4, "enemigo3", z, z,"mover", z, z, z, z, z, false, null));
+		}
+		
 		
 	//	fondo1 = new Fondo((int)imagenes.get("fondo").getWidth(),0,5,"fondo1");
 		
 	
 		
-		jugadoranimado = new JugadorAnimado(10,345,0, 0, "personaje",1, null, "descanso", 0, false, false, false, 0);
+		//jugadoranimado = new JugadorAnimado(10,345,0, 0, "personaje",1, null, "descanso", 0, false, false, false, 0);
 		
-		//jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "correr", 0, false, false, false, 0);
+		jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "correr", 0, false, false, false, 0);
 		//jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "saltar", 0, false, false, false, 0);
 	    //enemigos = new Enemigos(720,200,0, 0, 1, null, "enemigos");
 		
@@ -470,8 +492,8 @@ public class Juego extends Application{
 		
 		imagenes.put("personaje", new Image("personaje.png"));
 		imagenes.put("54", new Image("54.png"));
-		imagenes.put("personaje", new Image("personaje.png"));
-		imagenes.put("3", new Image("3.png"));
+		imagenes.put("enemigo3", new Image("enemigo3.png"));
+		imagenes.put("enemigo", new Image("enemigo.png"));
 		imagenes.put("fondo",new Image("fondo.jpg"));
 		
 		imagenes.put("item", new Image("item.png"));
@@ -500,8 +522,11 @@ public class Juego extends Application{
 				items.get(i).pintar(graficos);
 			
 	
-		   // for(int i=0; i<enemigos.size(); i++)
-		    //	enemigos.get(i).pintar(graficos);
+		    for(int i=0; i<enemigos.size(); i++)
+		   	enemigos.get(i).pintar(graficos);
+		    
+		    for(int i=0; i<enemigos2.size(); i++)
+			   	enemigos2.get(i).pintar(graficos);
 				//(graficos.setFont(new Font(30));
 				//graficos.fillText(String.valueOf(jugador.getPuntuacion()), 10d, 30d);
 	}
@@ -529,28 +554,39 @@ public class Juego extends Application{
 					switch (evento.getCode().toString()) {
 						case "RIGHT": //derecha
 							derecha=true;
+							JugadorAnimado.animacionActual="correr";
 							break;
 						case "LEFT": //derecha
 							izquierda=true;
 						break;
 						case "UP":
 							arriba=true;
+							JugadorAnimado.animacionActual="saltar";
 							//jugadoranimado= new JugadorAnimado(10,360,0, 0, "personaje",1, null, "saltar", 0, false, false, false, 0);
+							if(JugadorAnimado.y!=50)
+								JugadorAnimado.y-=50;
+							
 							break;
 						case "DOWN":
+							JugadorAnimado.animacionActual="correr";
+							if(JugadorAnimado.y!=-50)
+								JugadorAnimado.y+=50;
 							abajo=true;
 							break;
 						case "SPACE":
 						
-							jugadoranimado.setVelocidad(10);
-							jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "correr", 0, false, false, false, 0);
-							break;
 							
-						case "S":
-							saltando= true;
-						jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "saltar", 0, false, false, false, 0);
+							//jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "correr", 0, false, false, false, 0);
+
+							jugadoranimado.setVelocidad(10);
+							jugadoranimado.setIndiceImagen("personaje");
+							Enemigos.setVelocidad(8);
+							//	Enemigos2.setVelocidad(8);
+								
+								Animacion.setDuracion(0.05);
+							
 							break;
-						
+					
 							
 					}
 			}			
@@ -564,28 +600,35 @@ public class Juego extends Application{
 				switch (evento.getCode().toString()) {
 				case "RIGHT": //derecha
 					derecha=false;
+					JugadorAnimado.animacionActual="correr";
+					
+					Animacion.setDuracion(0.1);
 					break;
 				case "LEFT": //derecha
 					izquierda=false;
 				break;
 				case "UP":
 					arriba=false;
-				  // jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "saltar", 0, false, false, false, 0);
+				  
 					
 					break;
 				case "DOWN":
 					abajo=false;
-					jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "descanso", 0, false, false, false, 0);
-					break;
+				break;
 				case "SPACE":
 					//saltando = false;
-					jugadoranimado.setVelocidad(10);
-					jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "correr", 0, false, false, false, 0);
+					
+					jugadoranimado.setVelocidad(1);
+					jugadoranimado.setIndiceImagen("personaje");
+					Enemigos.setVelocidad(4);
+					//Enemigos2.setVelocidad(4);
+					
+					Animacion.setDuracion(0.1);
+					
+					
+					//jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "correr", 0, false, false, false, 0);
 					break;
-				case "S":
-					saltando= false;
-					jugadoranimado = new JugadorAnimado(10,360,0, 0, "personaje",1, null, "saltar", 0, false, false, false, 0);
-					break;
+				
 			}
 				
 				
@@ -599,44 +642,9 @@ public class Juego extends Application{
 		
 	}
 	
-	private void principal1() {
-		int x;
-		int y;
-		saltando = true;
-		int progreso_salto = 0;
-		int duracion_salto = 1000;
-	     if (saltando) {
-	            int delta_tiempo = 0;
-				progreso_salto += delta_tiempo;
-
-	            if (progreso_salto > duracion_salto) {
-	                        progreso_salto = duracion_salto;
-	            }
-
-	            x = (int) ecuacion_salto_x( delta_tiempo );
-	            y = (int) ecuacion_salto_y( delta_tiempo );
-
-	            if (progreso_salto == duracion_salto) {
-	                      progreso_salto = 0;
-	                      saltando = false;
-	            }
-	       }
-
-
-	}
 		
 	
 	
-
-	private int ecuacion_salto_x(int delta_tiempo) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	private int ecuacion_salto_y(int delta_tiempo) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	public void cicloJuego() {
 		long tiempoInicial = System.nanoTime();
@@ -645,10 +653,17 @@ public class Juego extends Application{
 			@Override
 			public void handle(long tiempoActualNanoSegundos) {
 				double t = (tiempoActualNanoSegundos - tiempoInicial) / 1000000000.0;
-				pintar();
-				actualizar(t);
+				if(!Juego.fin==true) {
+					pintar();
+					actualizar(t);
+					}else {
+					
+				}
+					//Alert mensaje= new Alert(null);
+				}	
 				
-			}
+				
+			
 			
 		};
 		animationTimer.start(); //Inicia el ciclo
@@ -683,24 +698,15 @@ public class Juego extends Application{
 		 	for (int i=0; i<tiles.size();i++)
 		 		tiles.get(i).mover();
 	
-	}	
 	
 	
-	
-		
 	
 	
 		
-	/*for (int i=0; i<enemigos.size();i++) {
-		if (jugadoranimado.verificarColisiones(enemigos.get(i)))
-			enemigos.remove(enemigos.get(i));
-	
-	 
-	 for (int i=0; i<enemigos.size();i++)
-	 		enemigos.get(i).mover();
 	
 	
-	}*/
+	}
+	
 	
 		/*	private void cambiarFondos() {
 				if (fondo1.getX() <= 0) {
@@ -731,10 +737,19 @@ public class Juego extends Application{
 				items.get(i).mover();
 			*/
 		
-		
+			for (int i=0; i<enemigos.size();i++) {
+				if (jugadoranimado.verificarColisiones(enemigos.get(i)))
+					enemigos.remove(enemigos.get(i));
+			
+			 
+			 for (int i=0; i<enemigos.size();i++)
+			 		enemigos.get(i).mover();
+			
+			
+			}
 		}
 		}
 			
-			
+
 
 		

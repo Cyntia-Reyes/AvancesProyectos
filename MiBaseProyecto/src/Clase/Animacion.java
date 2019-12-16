@@ -41,7 +41,7 @@ public class Animacion {
 	public double getDuracion() {
 		return duracion;
 	}
-	public void setDuracion(double duracion) {
+	public static void setDuracion(double duracion) {
 		this.duracion = duracion;
 	}
 	
